@@ -22,6 +22,9 @@ def index():
             data = vn.stock(symbol="ACB", source="VCI").quote().to_dict(
                 orient="records"
             )
+
+
+            data = df.to_dict(orient="records")
         except Exception as e:
             error = str(e)
     return render_template('index.html', data=data, error=error)
