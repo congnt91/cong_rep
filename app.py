@@ -18,6 +18,11 @@ def index():
         error = f"Could not import vnstock: {vn_import_error}"
     else:
         try:
+            # Fetch sample quote data for ticker ACB using source VCI
+            data = vn.stock(symbol="ACB", source="VCI").quote().to_dict(
+                orient="records"
+            )
+
 
             data = df.to_dict(orient="records")
         except Exception as e:
