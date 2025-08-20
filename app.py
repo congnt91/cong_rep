@@ -18,8 +18,7 @@ def index():
         error = f"Could not import vnstock: {vn_import_error}"
     else:
         try:
-            # Fetch sample data for ticker ACB using source VCI
-            df = vn.stock(symbol="ACB", source="VCI").price_board()
+
             data = df.to_dict(orient="records")
         except Exception as e:
             error = str(e)
