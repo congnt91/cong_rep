@@ -134,3 +134,37 @@ pip install scikit-learn
 python run_indicators.py    # -> out/indicators.json (quét 46 chỉ báo, mô hình)
 python run_confluence.py    # -> out/confluence.json (trùng mốc, cấu hình ghép)
 ```
+
+## Phần 5: tỉ lệ bật tại mốc và chiến lược ăn đoạn bật (bounce.py, run_bounce.py)
+
+Mỗi lần chạm mốc (mọi mốc tĩnh, không lọc RR): giá đi thuận x trước khi đi ngược y hay không, trong 24h.
+So với mốc giả (mức giá ngẫu nhiên cùng phiên/hướng/khoảng cách, cách mốc thật ≥ 0,25 ATR) và lý thuyết
+giá ngẫu nhiên P = y / (x + y). B dùng nến M1; A chỉ có M15 nên đo thiếu các cú bật nhỏ trong nến.
+Sai số đo như nhau với mốc thật và mốc giả, nên dùng chênh lệch thật − giả; kỳ vọng ước tính = chênh lệch − chi phí.
+
+Tỉ lệ bật trước khi ngược 0,75 ATR (≈ 14 USD), 2025–26, chưa trừ spread:
+
+| Bật ít nhất | 1 USD | 2 USD | 5 USD | 10 USD |
+|---|---|---|---|---|
+| Mốc thật, Limit | 86,8% | 82,3% | 69,9% | 57,7% |
+| Mốc giả, Limit | 88,3% | 83,2% | 72,1% | 57,0% |
+| Mốc thật, xác nhận M15 | 92,3% | 86,6% | 73,3% | 58,8% |
+| Lý thuyết | 93,3% | 87,4% | 73,8% | 58,9% |
+
+Cấu hình TP mỏng (kỳ vọng ước tính, R = 0,75 ATR; cột cuối USD/lệnh 0,01 lot năm 2025–26):
+
+| | A1 | A2 | B | B, USD |
+|---|---|---|---|---|
+| Limit, TP 0,1 ATR (≈ 2 USD), SL 0,75 ATR | −0,038 | −0,030 | −0,037 | −0,71 |
+| Limit, TP 0,1 ATR, không SL (đóng sau 24h) | −0,023 | −0,050 | +0,001 | −0,02 |
+| Xác nhận M15, TP 0,1 ATR, SL 0,75 ATR | −0,024 | −0,020 | −0,020 | −0,12 |
+| Mốc giả (đối chứng) | −0,022 | −0,022 | −0,022 | −0,30 |
+
+- Mốc thật không bật nhiều hơn giá ngẫu nhiên (kém 1–2 điểm % với cú bật nhỏ). Lệnh xác nhận M15 bật đúng bằng lý thuyết.
+- TP mỏng cho tỉ lệ thắng 75–96% nhưng luôn thấp hơn tỉ lệ cần để hoà vốn; kỳ vọng ≈ −spread.
+- Không SL: 2025–26 có 3,8% lệnh không bật nổi 0,1 ATR trong 24h, lỗ trung bình 72 USD/0,01 lot (≈ 39 lệnh thắng), tệ nhất 264 USD.
+- PDH/PDL bật kém giá ngẫu nhiên 6–10 điểm %, khung 10–12h server kém 5–15 điểm %; pivot phiên 8h ngang ngẫu nhiên.
+
+```bash
+python run_bounce.py        # -> out/bounce.json
+```
