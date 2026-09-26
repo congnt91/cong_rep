@@ -49,3 +49,23 @@ python run_grid.py old      # lưới SL x Limit/Stop -> out/grid_*.pkl
 python run_grid.py new
 python analysis.py          # -> out/results.json
 ```
+
+## Phần 2: phương án cải thiện Auto mốc (improve.py, run_improve.py, run_combo.py)
+
+Thử 37 cấu hình theo quy trình chọn trên A1 (2012–2017), kiểm tra trên A2 (2017–2022) và B (2025–26).
+
+| Kỳ vọng R/lệnh | A1 | A2 | B | Lệnh/tháng |
+|---|---|---|---|---|
+| Hiện tại: Limit tại mốc | −0,165 | −0,159 | −0,022 | 82–87 |
+| Xác nhận nến M15 (vào ở giá đóng nến, SL 0,75 ATR sau mốc) | −0,067 | −0,107 | −0,026 | 36–40 |
+| Xác nhận M15 + ATR H1 ≥ trung vị 20 ngày + chốt 50% tại 1R | −0,023 | −0,035 | +0,026 | 16–19 |
+
+- Lợi ích của xác nhận nến đến từ việc loại nhóm lệnh giá xuyên thẳng qua mốc (−0,25R/lệnh ở A1).
+- Không có tác dụng nhất quán: dời SL hoà vốn, trailing, time stop, TP ngắn/xa, SL rộng, Limit lệch mốc,
+  lọc phiên, thứ, số mốc gộp, RSI, khoảng cách EMA20, tốc độ tiếp cận.
+- Cấu hình đề xuất vẫn có khoảng tin cậy chứa 0 ở cả ba giai đoạn: giảm lỗ, chưa phải hệ thống có lãi.
+
+```bash
+python run_improve.py       # -> out/improve.json (thử nghiệm đơn lẻ, bộ lọc)
+python run_combo.py         # -> out/combo.json (cấu hình kết hợp, đường vốn)
+```
