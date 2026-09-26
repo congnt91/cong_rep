@@ -69,3 +69,24 @@ Thử 37 cấu hình theo quy trình chọn trên A1 (2012–2017), kiểm tra t
 python run_improve.py       # -> out/improve.json (thử nghiệm đơn lẻ, bộ lọc)
 python run_combo.py         # -> out/combo.json (cấu hình kết hợp, đường vốn)
 ```
+
+## Phần 3: lọc theo khung giờ (run_hours.py)
+
+9 khung giờ định nghĩa trước theo lịch thị trường (giờ server MT5 = NY + 7; giờ VN = server + 4 mùa hè / + 5 mùa đông).
+Chọn khung cấm trên A1, kiểm tra trên A2 và B.
+
+| Kỳ vọng R/lệnh | A1 | A2 | B |
+|---|---|---|---|
+| Limit hiện tại | −0,165 | −0,159 | −0,022 |
+| Limit, cấm 01–02h và 10–12h server (chọn trên A1) | −0,148 | −0,145 | +0,021 |
+| Lệnh trong 2 khung bị cấm | −0,248 | −0,226 | −0,236 |
+| Xác nhận M15, chỉ PDH/PDL, chỉ 02–05h server | +0,127 | +0,081 | +0,584 (19 lệnh) |
+
+- Nên cấm: 01–02h server (mở cửa lại, tỷ lệ thắng 30–37%) và 10–12h server (London mở cửa, RR trung vị chỉ 1,34–1,38).
+- Giờ Mỹ vỡ mốc nhiều hơn (32–43% so với 13–26% phiên Á) nhưng kỳ vọng không xấu hơn; không nên cấm.
+  Lệnh Stop giờ Mỹ cũng không lãi.
+- Với cấu hình xác nhận + lọc ATR + chốt 50%, lọc giờ không cải thiện thêm ở 2012–2022.
+
+```bash
+python run_hours.py         # -> out/hours.json
+```
