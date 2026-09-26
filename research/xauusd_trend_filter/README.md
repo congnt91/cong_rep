@@ -90,3 +90,47 @@ Chọn khung cấm trên A1, kiểm tra trên A2 và B.
 ```bash
 python run_hours.py         # -> out/hours.json
 ```
+
+## Phần 4: kết hợp mốc với chỉ báo (indicators.py, run_indicators.py, run_confluence.py)
+
+46 chỉ báo thuộc 7 nhóm (xu hướng, vị trí, dao động, biến động, volume, hành vi giá, cấu trúc), đo trên nến
+đã đóng tại lúc vào lệnh, quy đổi theo hướng lệnh. Mỗi chỉ báo: chọn trên A1 giữ 40% lệnh ở đuôi thấp hoặc cao,
+kiểm tra trên A2 và B. "Vững" = cải thiện ở A2 có khoảng tin cậy > 0 và cải thiện ở B > 0
+(may rủi thuần tuý: khoảng 11/46 cùng dấu, 0–2/46 vững).
+
+| | Cùng dấu A2 và B | Vững |
+|---|---|---|
+| Limit tại mốc | 17/46 | 4/46: khoảng cách tới VWAP, mốc trùng swing, RSI M15, NR7 D1 (+0,02 đến +0,07R/lệnh ở A2) |
+| Xác nhận nến M15 | 9/46 | 0/46 |
+
+Mốc trùng đường chỉ báo (Limit, E trùng / không trùng):
+
+| | A1 | A2 | B |
+|---|---|---|---|
+| Trùng đỉnh/đáy swing H1 gần đây | −0,262 / −0,137 | −0,201 / −0,147 | −0,130 / +0,003 |
+| Trùng dải Bollinger ngoài H1 | −0,212 / −0,157 | −0,252 / −0,142 | −0,071 / −0,012 |
+| Trùng EMA50 H1 | −0,273 / −0,155 | −0,259 / −0,151 | +0,108 / −0,033 |
+| Trùng số tròn 50 USD | −0,261 / −0,162 | −0,249 / −0,155 | −0,035 / −0,018 |
+
+Cấu hình ghép (E R/lệnh):
+
+| | A1 | A2 | B |
+|---|---|---|---|
+| Limit hiện tại | −0,165 | −0,159 | −0,022 |
+| Limit, tránh mốc trùng swing H1 và dải Bollinger ngoài | −0,137 | −0,135 | +0,006 |
+| Như trên + cấm 01–02h, 10–12h server | −0,120 | −0,122 | +0,043 |
+| Xác nhận M15 + ATR ≥ trung vị + chốt 50% | −0,023 | −0,035 | +0,026 |
+| Như trên + tránh dải Bollinger ngoài | −0,030 | −0,038 | +0,073 |
+
+- RSI/Stochastic/CCI quá bán, MACD, Supertrend, Ichimoku, PSAR, phân kỳ RSI: cải thiện 0,00–0,03R, không phân biệt được với may rủi.
+- Nhóm biến động (ATR, ADX, độ rộng Bollinger) giúp ở 2012–22, không rõ ở 2025–26; bộ lọc ATR trong cấu hình đề xuất đã dùng phần này.
+- Mốc trùng swing gần đây, dải Bollinger ngoài, EMA50 hay số tròn không mạnh hơn mà yếu hơn (nơi tập trung stop).
+- Mô hình máy học (logistic, ridge, gradient boosting) giữ 30% lệnh tốt nhất: gradient boosting đạt +0,41 đến +0,57R trên dữ liệu
+  huấn luyện nhưng −0,07 đến +0,03R ở B; không mô hình nào ổn định trên cả hai giai đoạn kiểm tra.
+- Các bộ lọc "tránh" được chọn sau khi xem cả ba giai đoạn nên kết quả ghép lạc quan hơn thực tế.
+
+```bash
+pip install scikit-learn
+python run_indicators.py    # -> out/indicators.json (quét 46 chỉ báo, mô hình)
+python run_confluence.py    # -> out/confluence.json (trùng mốc, cấu hình ghép)
+```
