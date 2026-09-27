@@ -66,5 +66,6 @@ def build_new():
 
 if __name__ == "__main__":
     os.makedirs(D, exist_ok=True)
+    os.makedirs("out", exist_ok=True)  # các script run_*.py ghi kết quả vào out/
     build_old()
     build_new()
