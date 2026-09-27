@@ -168,3 +168,14 @@ Cấu hình TP mỏng (kỳ vọng ước tính, R = 0,75 ATR; cột cuối USD/
 ```bash
 python run_bounce.py        # -> out/bounce.json
 ```
+
+## Xuất dữ liệu từng lệnh (export_results.py)
+
+```bash
+python export_results.py    # -> out/export/lenh_limit.csv, lenh_xac_nhan.csv, cham_moc.csv
+```
+
+- `lenh_limit.csv`: lệnh Limit tại mốc như Nola-X (SL 0,75 ATR, TP mốc kế tiếp, RR ≥ 1), kèm trend/swing và đặc trưng lúc khớp, kết quả R và USD / 0,01 lot.
+- `lenh_xac_nhan.csv`: xác nhận nến M15 + chốt 50% tại 1R; lọc `atr_rel >= 1` là cấu hình đề xuất Phần 2.
+- `cham_moc.csv`: mọi lần chạm mốc (thật/giả, Limit/xác nhận), độ bật trước khi ngược 0,5/0,75/1,0 ATR và độ ngược trước khi bật 0,05/0,1/0,2 ATR.
+- Cột `thoi_gian_server` là giờ MT5 (NY + 7), `gio_vn` là giờ Việt Nam. File UTF-8 có BOM để Excel đọc đúng tiếng Việt.
